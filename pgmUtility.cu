@@ -41,28 +41,34 @@ int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int cen
     return 1;
 }
 
-int main(int argc, char *argv[]) {
 
-    int i, j;
-    FILE *in_temp = fopen("balloons.ascii.pgm", "r"); 
-    char **header = ( char** ) malloc(rowsInHeader * sizeof(char *));
-    for(i = 0; i < rowsInHeader; i ++) {
-        header[i] = (char* ) malloc(sizeof(char) * maxSizeHeadRow);
-    }
+/*
+    temporary main function used in testing the functions used in pgmUtility.cu,
+    will be deleted before turn in.
+*/
 
-    int numRows, numCols;
-    int * temp = pgmRead(header, &numRows, &numCols, in_temp);
-    for(i = 0; i < numRows; i++) {
-        for (j = 0; j < numCols; j++) {
-            printf("%d ", *(temp + (i * j)));
-        }
-        printf("\n");
-    }
+// int main(int argc, char *argv[]) {
 
-    // for(int x = 0; x < 30; x++) {
-    //     printf("%d ", temp[x]);
-    // }
+//     int i, j;
+//     FILE *in_temp = fopen("balloons.ascii.pgm", "r"); 
+//     char **header = ( char** ) malloc(rowsInHeader * sizeof(char *));
+//     for(i = 0; i < rowsInHeader; i ++) {
+//         header[i] = (char* ) malloc(sizeof(char) * maxSizeHeadRow);
+//     }
+
+//     int numRows, numCols;
+//     int * temp = pgmRead(header, &numRows, &numCols, in_temp);
+//     for(i = 0; i < numRows; i++) {
+//         for (j = 0; j < numCols; j++) {
+//             printf("%d ", *(temp + (i * j)));
+//         }
+//         printf("\n");
+//     }
+
+//     // for(int x = 0; x < 30; x++) {
+//     //     printf("%d ", temp[x]);
+//     // }
 
 
-    return 0;
-}
+//     return 0;
+// }
