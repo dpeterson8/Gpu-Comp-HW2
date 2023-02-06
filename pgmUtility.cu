@@ -41,34 +41,49 @@ int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int cen
     return 1;
 }
 
+int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, FILE *out ) {
+    
+    int i, j;
+
+    for(i = 0; i<rowsInHeader; i++) {
+        fprintf(out ,"%s" , *(header + i));
+    }
+
+    for(i = 0; i < numRows; i++) {
+        for(j = 0; j < numCols; j++) {
+            if(((i * numCols) + j) % 17 != 0) {
+                fprintf(out, "%d ", *(pixels +((i * numCols) + j)));
+            } else {
+                fprintf(out, "%d\n", *(pixels +((i * numCols) + j)));
+            }
+        }
+    }
+    return 0;
+}
 
 /*
     temporary main function used in testing the functions used in pgmUtility.cu,
-    will be deleted before turn in.
+    will be deleted before turnin.
 */
 
-// int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
-//     int i, j;
-//     FILE *in_temp = fopen("balloons.ascii.pgm", "r"); 
-//     char **header = ( char** ) malloc(rowsInHeader * sizeof(char *));
-//     for(i = 0; i < rowsInHeader; i ++) {
-//         header[i] = (char* ) malloc(sizeof(char) * maxSizeHeadRow);
-//     }
+    int i;
+    FILE *in_temp = fopen("balloons.ascii.pgm", "r"); 
+    FILE *out_temp = fopen("balloons.ascii-test.pgm", "w"); 
+    char **header = ( char** ) malloc(rowsInHeader * sizeof(char *));
+    for(i = 0; i < rowsInHeader; i ++) {
+        header[i] = (char* ) malloc(sizeof(char) * maxSizeHeadRow);
+    }
 
-//     int numRows, numCols;
-//     int * temp = pgmRead(header, &numRows, &numCols, in_temp);
-//     for(i = 0; i < numRows; i++) {
-//         for (j = 0; j < numCols; j++) {
-//             printf("%d ", *(temp + (i * j)));
-//         }
-//         printf("\n");
-//     }
+    int numRows, numCols;
+    int * temp = pgmRead(header, &numRows, &numCols, in_temp);
+    int awnser = pgmWrite((const char **) header, temp, numRows, numCols, out_temp);
 
-//     // for(int x = 0; x < 30; x++) {
-//     //     printf("%d ", temp[x]);
-//     // }
+    // for(int x = 0; x < 30; x++) {
+    //     printf("%d ", temp[x]);
+    // }
 
 
-//     return 0;
-// }
+    return 0;
+}
