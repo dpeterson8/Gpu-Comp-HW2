@@ -54,7 +54,8 @@ int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, 
 
     for(i = 0; i < numRows; i++) {
         for(j = 0; j < numCols; j++) {
-            if(((i * numCols) + j) % 17 != 0) {
+            //((i * numCols) + j) % 17 != 0
+            if(j < numCols - 1) {
                 fprintf(out, "%d ", *(pixels +((i * numCols) + j)));
             } else {
                 fprintf(out, "%d\n", *(pixels +((i * numCols) + j)));
@@ -81,13 +82,19 @@ int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, 
 
 //     int numRows, numCols;
 //     int * temp = pgmRead(header, &numRows, &numCols, in_temp);
-//     int awnser = pgmWrite((const char **) header, temp, numRows, numCols, out_temp);
 
 //     // for(int x = 0; x < 30; x++) {
 //     //     printf("%d ", temp[x]);
 //     // }
-//     dPgmDrawCircle<<<numRows, numCols>>>(temp, numRows, numCols, 0, 0, 0, header);
-//     cudaDeviceSynchronize();   
+//     int num_bytes = numCols * numRows * sizeof(int);
+//     int * d_temp = 0;
+//     cudaMalloc((void **) &d_temp, num_bytes);
+//     cudaMemcpy( d_temp, temp, num_bytes, cudaMemcpyHostToDevice );
+//     dPgmDrawCircle<<<numRows, numCols>>>(d_temp, numRows, numCols, 2, 2, 20, header);
+//     cudaMemcpy( temp, d_temp, num_bytes, cudaMemcpyDeviceToHost );
+
+
+//     int awnser = pgmWrite((const char **) header, temp, numRows, numCols, out_temp);
 
 //     return 0;
 // }
