@@ -1,4 +1,4 @@
-
+#include <math.h>
 
 /**
  *  Function Name:
@@ -11,5 +11,12 @@
  */
 __device__ float distance( int p1[], int p2[] )
 {
+    float x1 = p1[1];
+    float x2 = p2[1];
+    float y1 = p1[0];
+    float y2 = p1[0];
+    float distance = sqrt(((x2-x1) * (x2-x1))+((y2-y1) * (y2-y1)));
+
+    return distance;
 
 }
