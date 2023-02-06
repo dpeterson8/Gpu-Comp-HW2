@@ -1,4 +1,7 @@
 #include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 
 /**
  *  Function Name:
@@ -14,9 +17,21 @@ __device__ float distance( int p1[], int p2[] )
     float x1 = p1[1];
     float x2 = p2[1];
     float y1 = p1[0];
-    float y2 = p1[0];
+    float y2 = p2[0];
     float distance = sqrt(((x2-x1) * (x2-x1))+((y2-y1) * (y2-y1)));
-
+    
     return distance;
 
+}
+
+__global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
+    int ix   = blockIdx.x*blockDim.x + threadIdx.x;
+    int iy   = blockIdx.y*blockDim.y + threadIdx.y;
+    int idx = iy*numCols + ix;
+
+    int p1[2] = {ix, iy*numCols};
+    int p2[2] = {centerCol, centerRow};
+    float dis = distance(p1, p2);
+
+    printf("%f", dis);
 }

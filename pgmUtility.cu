@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "pgmUtility.h"
+#include "pgmProcess.h"
 
 // Implement or define each function prototypes listed in pgmUtility.h file.
 // NOTE: Please follow the instructions stated in the write-up regarding the interface of the functions.
@@ -38,6 +39,8 @@ int * pgmRead( char **header, int *numRows, int *numCols, FILE *in  ) {
 }
 
 int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header ) {
+    
+
     return 1;
 }
 
@@ -66,24 +69,25 @@ int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, 
     will be deleted before turnin.
 */
 
-int main(int argc, char *argv[]) {
+// int main(int argc, char *argv[]) {
 
-    int i;
-    FILE *in_temp = fopen("balloons.ascii.pgm", "r"); 
-    FILE *out_temp = fopen("balloons.ascii-test.pgm", "w"); 
-    char **header = ( char** ) malloc(rowsInHeader * sizeof(char *));
-    for(i = 0; i < rowsInHeader; i ++) {
-        header[i] = (char* ) malloc(sizeof(char) * maxSizeHeadRow);
-    }
+//     int i;
+//     FILE *in_temp = fopen("balloons.ascii.pgm", "r"); 
+//     FILE *out_temp = fopen("balloons.ascii-test.pgm", "w"); 
+//     char **header = ( char** ) malloc(rowsInHeader * sizeof(char *));
+//     for(i = 0; i < rowsInHeader; i ++) {
+//         header[i] = (char* ) malloc(sizeof(char) * maxSizeHeadRow);
+//     }
 
-    int numRows, numCols;
-    int * temp = pgmRead(header, &numRows, &numCols, in_temp);
-    int awnser = pgmWrite((const char **) header, temp, numRows, numCols, out_temp);
+//     int numRows, numCols;
+//     int * temp = pgmRead(header, &numRows, &numCols, in_temp);
+//     int awnser = pgmWrite((const char **) header, temp, numRows, numCols, out_temp);
 
-    // for(int x = 0; x < 30; x++) {
-    //     printf("%d ", temp[x]);
-    // }
+//     // for(int x = 0; x < 30; x++) {
+//     //     printf("%d ", temp[x]);
+//     // }
+//     dPgmDrawCircle<<<numRows, numCols>>>(temp, numRows, numCols, 0, 0, 0, header);
+//     cudaDeviceSynchronize();   
 
-
-    return 0;
-}
+//     return 0;
+// }
