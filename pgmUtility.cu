@@ -90,7 +90,7 @@ int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, 
 //     int * d_temp = 0;
 //     cudaMalloc((void **) &d_temp, num_bytes);
 //     cudaMemcpy( d_temp, temp, num_bytes, cudaMemcpyHostToDevice );
-//     dPgmDrawCircle<<<numRows, numCols>>>(d_temp, numRows, numCols, 2, 2, 20, header);
+//     dPgmDrawCircle<<<numRows, numCols>>>(d_temp, numRows, numCols, 0, 0, 2, header);
 //     cudaMemcpy( temp, d_temp, num_bytes, cudaMemcpyDeviceToHost );
 
 
