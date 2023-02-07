@@ -10,4 +10,4 @@
  */
 __device__ float distance( int p1[], int p2[] );
 
-__global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header);
+__global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius);

@@ -24,16 +24,16 @@ __device__ float distance( int p1[], int p2[] )
 
 }
 
-__global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
+__global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius) {
     int ix   = blockIdx.x*blockDim.x + threadIdx.x;
     int iy   = blockIdx.y*blockDim.y + threadIdx.y;
     int idx = iy*numCols + ix;
 
-    int p1[2] = {(int)blockIdx.x, ix % numCols};
+    int p1[2] = {iy, ix % numCols};
     int p2[2] = {centerRow, centerCol};
     float dis = distance(p1, p2);
     
-    if((float)radius >= dis ) {
+    if(dis <= radius) {
         pixels[idx] = 0;
     }
 
