@@ -53,6 +53,10 @@ int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int cen
     return 1;
 }
 
+int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header ) {
+    return 1;
+}
+
 int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, FILE *out ) {
     
     int i, j;

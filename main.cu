@@ -1,33 +1,56 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "pgmUtility.h"
 
 int main(int argc, char *argv[]) {
-    int i;
-    FILE *in_temp = fopen("balloons.ascii.pgm", "r"); 
-    FILE *out_temp = fopen("balloons.ascii-test.pgm", "w"); 
+    FILE *inFile;
+    FILE *outFile;
     char **header = ( char** ) malloc(rowsInHeader * sizeof(char *));
+
+    int circleCenterRow, circleCenterCol, circleRadius;
+    char originalFileName[100], newFileName[100];
+    int numRows, numCols;
+    int * hPixels, * dPixels;
+    int num_bytes;
+
+    char * drawType = argv[1];
+
+    int i;
     for(i = 0; i < rowsInHeader; i ++) {
         header[i] = (char* ) malloc(sizeof(char) * maxSizeHeadRow);
     }
 
-    int numRows, numCols;
-    int * temp = pgmRead(header, &numRows, &numCols, in_temp);
+    if(drawType[1] == 'c') {
+        
+        circleCenterRow = atoi(argv[2]);
+        circleCenterCol = atoi(argv[3]);
+        circleRadius = atoi(argv[4]);
+        strcpy(originalFileName, argv[5]);
+        strcpy(newFileName, argv[6]);
 
-    // for(int x = 0; x < 30; x++) {
-    //     printf("%d ", temp[x]);
-    // }
-    int num_bytes = numCols * numRows * sizeof(int);
-    int * d_temp = 0;
+        inFile = fopen(originalFileName, "r");
+        outFile = fopen("balloons.ascii-test.pgm", "w"); 
 
-    cudaMalloc((void **) &d_temp, num_bytes);
-    cudaMemcpy( d_temp, temp, num_bytes, cudaMemcpyHostToDevice );
-    pgmDrawCircle(d_temp, numRows, numCols, 0, 0, 10, header);
-    cudaDeviceSynchronize();
-    cudaMemcpy( temp, d_temp, num_bytes, cudaMemcpyDeviceToHost );
+        hPixels = pgmRead(header, &numRows, &numCols, inFile);
+        num_bytes = numCols * numRows * sizeof(int);
 
-    int awnser = pgmWrite((const char **) header, temp, numRows, numCols, out_temp);
+        cudaMalloc((void **) &dPixels, num_bytes);
+        cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
+        pgmDrawCircle(dPixels, numRows, numCols, circleCenterRow, circleCenterCol, circleRadius, header);
+        cudaDeviceSynchronize();
+        cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
+        cudaFree(dPixels);
+
+        int ret = pgmWrite((const char **) header, hPixels, numRows, numCols, outFile);
+        for(i = 0; i < rowsInHeader; i++) {
+            free(header[i]);
+        }
+        free(header);
+        free(hPixels);
+
+    }
 
     return 0;
 }
