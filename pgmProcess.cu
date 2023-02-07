@@ -28,12 +28,13 @@ __global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int center
     int ix   = blockIdx.x*blockDim.x + threadIdx.x;
     int iy   = blockIdx.y*blockDim.y + threadIdx.y;
     int idx = iy*numCols + ix;
-    
-    int p1[2] = {(int)blockIdx.x, ix % 10};
+
+    int p1[2] = {(int)blockIdx.x, ix % numCols};
     int p2[2] = {centerRow, centerCol};
     float dis = distance(p1, p2);
+    
     if((float)radius >= dis ) {
-        pixels[idx] = 255;
+        pixels[idx] = 0;
     }
 
 }
