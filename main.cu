@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
         }
         free(header);
         free(hPixels);
+        
 
     } else if(drawType[1] == 'e') {
 
