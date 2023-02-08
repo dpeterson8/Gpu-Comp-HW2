@@ -58,7 +58,6 @@ int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int 
 
     for(i = 0; i < numRows; i++) {
         for(j = 0; j < numCols; j++) {
-            printf("Debug rows: %d cols: %d", numRows, numCols);
             int p1[2] = {i, j};
             int p2[2] = {centerRow, centerCol};
             int dis = hostDistance(p1, p2);
