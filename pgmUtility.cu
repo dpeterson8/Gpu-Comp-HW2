@@ -54,6 +54,20 @@ int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int cen
 }
 
 int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header ) {
+    int i, j;
+
+    for(i = 0; i < numRows; i++) {
+        for(j = 0; j < numCols; j++) {
+            int p1[2] = {i, j};
+            int p2[2] = {centerRow, centerCol};
+            int dis = hostDistance(p1, p2);
+            if (dis <= radius)
+            {
+                pixels[(i * numCols) + j] = 0;
+            }
+            
+        }
+    }
     return 1;
 }
 
@@ -75,4 +89,17 @@ int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, 
         }
     }
     return 0;
+}
+
+
+float hostDistance( int p1[], int p2[] )
+{
+    float x1 = p1[1];
+    float x2 = p2[1];
+    float y1 = p1[0];
+    float y2 = p2[0];
+    float distance = sqrt(((x2-x1) * (x2-x1))+((y2-y1) * (y2-y1)));
+    
+    return distance;
+
 }

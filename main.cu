@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
         hPixels = pgmRead(header, &numRows, &numCols, inFile);
         num_bytes = numCols * numRows * sizeof(int);
 
+        cpuPgmDrawCircle(hPixels, numRows, numCols, circleCenterRow, circleCenterCol, circleRadius, header);
+
         cudaMalloc((void **) &dPixels, num_bytes);
         cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
         pgmDrawCircle(dPixels, numRows, numCols, circleCenterRow, circleCenterCol, circleRadius, header);
@@ -50,6 +52,10 @@ int main(int argc, char *argv[]) {
         free(header);
         free(hPixels);
 
+    } else if(drawType[1] == 'e') {
+
+    } else if(drawType[1] == 'l') {
+        
     }
 
     return 0;
