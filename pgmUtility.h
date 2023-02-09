@@ -122,6 +122,8 @@ int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int 
 
 float hostDistance( int p1[], int p2[] );
 
+void displayError();
+
 
 
 #endif
