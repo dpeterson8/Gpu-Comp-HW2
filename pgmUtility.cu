@@ -11,7 +11,7 @@
 // NOTE: Please follow the instructions stated in the write-up regarding the interface of the functions.
 // NOTE: You might have to change the name of this file into pgmUtility.cu if needed.
 
-int * pgmRead( char **header, int *numRows, int *numCols, FILE *in  ) {
+int * pgmRead( char **header, int *numRows, int *numCols, FILE *in) {
     int i, j;
 
     for( i = 0; i < rowsInHeader; i++) {
@@ -71,6 +71,34 @@ int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int 
     return 1;
 }
 
+int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col ){
+
+    dim3 block, grid;
+
+    block.x = 32;
+    block.y = 32;
+
+    grid.x = ceil( (float)numCols / (float)block.x );
+    grid.y = ceil( (float)numRows / (float)block.y );
+
+    int p1[2] = {p1row, p1col};
+    int p2[2] = {p2row, p2col};
+
+    float linearEquation[2];
+    linearEquation[0] = (float)(p2[1] - p1[1])/(float)(p2[0] - p1[0]);
+    linearEquation[1] = (float)p1[1] - (linearEquation[0] * (float)p1[0]);
+
+    dPgmDrawLine<<<grid, block>>>(pixels, p1, p2,linearEquation, numRows, numCols);
+
+    return 1;
+}
+
+int cpuPgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col ){
+
+
+    return 1;
+}
+
 int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, FILE *out ) {
     
     int i, j;
@@ -101,5 +129,4 @@ float hostDistance( int p1[], int p2[] )
     float distance = sqrt(((x2-x1) * (x2-x1))+((y2-y1) * (y2-y1)));
     
     return distance;
-
 }

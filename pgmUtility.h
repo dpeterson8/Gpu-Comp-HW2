@@ -13,7 +13,9 @@
 #define rowsInHeader 4      // number of rows in image header
 #define maxSizeHeadRow 200  // maximal number characters in one row in the header
 
-
+typedef struct {
+    int x,y;
+} point;
 
 /**
  *  Function Name: 
@@ -54,7 +56,6 @@ int * pgmRead( char **header, int *numRows, int *numCols, FILE *in  );
  */
 int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow,
                   int centerCol, int radius, char **header );
-
 
 /**
  *  Function Name:
@@ -115,9 +116,9 @@ int pgmDrawLine( int *pixels, int numRows, int numCols, char **header, int p1row
  *  @return     return 0 if the function successfully writes the header and pixels into file.
  *                          else return -1;
  */
-int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, FILE *out );
+int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, FILE *out);
 
-int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header );
+int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header);
 
 
 float hostDistance( int p1[], int p2[] );

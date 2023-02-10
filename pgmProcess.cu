@@ -38,3 +38,58 @@ __global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int center
     }
 
 }
+/*
+* Given a slope-intercept form of a line, determines if the point x,y falls on that line.
+*
+* Note that only the first two values of linearEquation are read.
+* the first value is the slope (the m of y=mx+b)
+* the second value is the intercept (the b of y=mx+b)
+*
+*/
+__device__ int isOnLine(float *linearEquation, int x, int y ){
+    if(ceil((float)x*linearEquation[0] + linearEquation[1]) == y ||
+       floor((float)x*linearEquation[0] + linearEquation[1]) == y  ){ //Check floor or ceiling for a thicker line hopefully
+        return 1;
+    } else {
+        return 0;
+    }
+}
+/* 
+*
+*/
+__global__ void dPgmDrawLine(int* pixels, int* p1, int* p2, float* linearEquation, int numRows, int numCols){
+    int ix   = blockIdx.x*blockDim.x + threadIdx.x;
+    int iy   = blockIdx.y*blockDim.y + threadIdx.y;
+    int idx = iy*numCols + ix;
+
+    int left, top, right, bottom;
+
+    //Find boundaries
+    if (p1[0] < p2[0]){
+        left = p1[0];
+        right = p2[0];
+    } else {
+        left = p2[0];
+        right = p1[0];
+    }
+
+    if (p1[1] < p2[1]){
+        top = p1[1];
+        bottom = p2[1];
+    } else {
+        top = p2[1];
+        bottom = p1[1];
+    }
+    
+    
+
+    if (ix < numRows && iy < numCols){ //Check to see if the thread should be interacting with the image
+
+        if (ix >= left && ix <= right && iy >= top && iy <= bottom) { //Check line boundaries
+            if (isOnLine(linearEquation,ix,iy)){
+                pixels[idx] = 0;
+            }
+        }
+    }
+}
+

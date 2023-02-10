@@ -11,3 +11,8 @@
 __device__ float distance( int p1[], int p2[] );
 
 __global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius);
+
+__device__ int isOnLine(float *linearEquation, int x, int y );
+
+__global__ void dPgmDrawLine(int* pixels, int* p1, int* p2, float* linearEquation, int numRows, int numCols);
+
