@@ -37,6 +37,20 @@ int * pgmRead( char **header, int *numRows, int *numCols, FILE *in  ) {
   return pixels;
 }
 
+int pgmDrawEdge( int *pixels, int numRows, int numCols, int edgeWidth, char **header ) {
+
+  dim3 block, grid;
+
+  block.x = 32;
+  block.y = 32;
+
+  grid.x = ceil( (float)numCols / (float)block.x );
+  grid.y = ceil( (float)numRows / (float)block.y );
+
+  dPgmDrawEdge<<<grid, block>>>(pixels, numRows, numCols, edgeWidth, header);
+  return 1;
+}
+
 int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header ) {
     
   dim3 block, grid;
@@ -69,6 +83,24 @@ int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int 
   }
   return 1;
 }
+
+int pgmDrawLine( int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col ) {
+  dim3 block, grid;
+
+  block.x = 32;
+  block.y = 32;
+
+  grid.x = ceil( (float)numCols / (float)block.x );
+  grid.y = ceil( (float)numRows / (float)block.y );
+
+  float slope = (p2row - p1row)/(p2col - p1col);
+  float remainder = p1row - (slope * p1col);
+
+  dPgmDrawLine<<<grid, block>>>(pixels, numRows, numCols, slope, remainder);
+  
+  return 1;
+}
+
 
 int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, FILE *out ) {
   

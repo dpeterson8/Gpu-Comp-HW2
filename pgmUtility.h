@@ -119,7 +119,6 @@ int pgmWrite( const char **header, const int *pixels, int numRows, int numCols, 
 
 int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header );
 
-
 float hostDistance( int p1[], int p2[] );
 
 void displayError();

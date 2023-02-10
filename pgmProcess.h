@@ -11,3 +11,9 @@
 __host__ __device__ float distance( int p1[], int p2[] );
 
 __global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius);
+
+__global__ void dPgmDrawLine(int *pixels, int numRows, int numCols, float slope, float rem);
+
+__global__ void dPgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char ** header);
+
+__device__ float slope( int p1[], int p2[]);
