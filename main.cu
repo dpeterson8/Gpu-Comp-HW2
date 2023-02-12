@@ -18,8 +18,8 @@ int main(int argc, char *argv[]) {
   int * hPixels, * dPixels;
   int num_bytes;
   char * drawType;
-  double now, then;
-  double scost, pcost;
+  // double now, then;
+  // double scost, pcost;
 
   if (argv[1] != NULL) {
     drawType = argv[1];
