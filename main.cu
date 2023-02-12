@@ -3,6 +3,8 @@
 #include <math.h>
 
 #include "pgmUtility.h"
+#include "pgmCpuUtility.h"
+
 
 int main(int argc, char *argv[]) {
   FILE *inFile;
@@ -16,6 +18,8 @@ int main(int argc, char *argv[]) {
   int * hPixels, * dPixels;
   int num_bytes;
   char * drawType;
+  double now, then;
+  double scost, pcost;
 
   if (argv[1] != NULL) {
     drawType = argv[1];
@@ -52,13 +56,12 @@ int main(int argc, char *argv[]) {
     num_bytes = numCols * numRows * sizeof(int);
 
     // run cpPgmDrawCircle which will draw the circle using only cpu
-    cpuPgmDrawCircle(hPixels, numRows, numCols, circleCenterRow, circleCenterCol, circleRadius, header);
+    // cpuPgmDrawCircle(hPixels, numRows, numCols, circleCenterRow, circleCenterCol, circleRadius, header);
 
     // calls to draw circle using 
     cudaMalloc((void **) &dPixels, num_bytes);
     cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
     pgmDrawCircle(dPixels, numRows, numCols, circleCenterCol, circleCenterRow, circleRadius, header);
-    cudaDeviceSynchronize();
     cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
     cudaFree(dPixels);
 
@@ -66,12 +69,17 @@ int main(int argc, char *argv[]) {
     for(i = 0; i < rowsInHeader; i++) {
         free(header[i]);
     }
-    free(header);
+    free(header); 
     free(hPixels);
 
 
   } 
   else if(drawType[1] == 'e') {
+
+    if(argc != 5) {
+      displayError();
+      exit(0);
+    }
 
     int edgeWidth = atoi(argv[2]);
     strcpy(originalFileName, argv[3]);
@@ -79,14 +87,13 @@ int main(int argc, char *argv[]) {
 
     inFile = fopen(originalFileName, "r");
     outFile = fopen(newFileName, "w"); 
-
+    cpuPgmDrawEdge(hPixels, numRows, numCols, edgeWidth, header);
     hPixels = pgmRead(header, &numRows, &numCols, inFile);
     num_bytes = numCols * numRows * sizeof(int);
 
     cudaMalloc((void **) &dPixels, num_bytes);
     cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
     pgmDrawEdge(dPixels, numRows, numCols, edgeWidth, header);
-    cudaDeviceSynchronize();
     cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
     cudaFree(dPixels);
 
@@ -99,6 +106,11 @@ int main(int argc, char *argv[]) {
 
   } 
   else if(drawType[1] == 'l') {
+
+    if(argc != 8) {
+      displayError();
+      exit(0);
+    }
 
     p1row = atoi(argv[2]);
     p1col = atoi(argv[3]);
@@ -117,7 +129,6 @@ int main(int argc, char *argv[]) {
     cudaMalloc((void **) &dPixels, num_bytes);
     cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
     pgmDrawLine(dPixels, numRows, numCols, header, p1row, p1col, p2row, p2col);
-    cudaDeviceSynchronize();
     cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
     cudaFree(dPixels);
 
