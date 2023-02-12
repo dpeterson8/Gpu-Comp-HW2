@@ -1,5 +1,5 @@
-lab1: main.o pgmUtility.o pgmProcess.o
-	nvcc -arch=sm_52 -o lab1 main.o pgmUtility.o pgmProcess.o  -I.
+myPaint: main.o pgmUtility.o pgmProcess.o
+	nvcc -arch=sm_52 -o myPaint main.o pgmUtility.o pgmProcess.o  -I.
 
 main.o: main.cu
 	nvcc -arch=sm_52 -c main.cu

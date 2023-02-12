@@ -24,6 +24,16 @@ __device__ float distance( int p1[], int p2[] )
 
 }
 
+__device__ float findSlope( int p1[], int p2[]) {
+  float x1 = p1[1];
+  float x2 = p2[1];
+  float y1 = p1[0];
+  float y2 = p2[0];
+  float slope = ((y2-y1)/(x2-x1));
+
+  return slope;
+}
+
 __global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius) {
   int ix   = blockIdx.x*blockDim.x + threadIdx.x;
   int iy   = blockIdx.y*blockDim.y + threadIdx.y;
@@ -37,4 +47,30 @@ __global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int center
     pixels[idx] = 0;
   }
 
+}
+
+__global__ void dPgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char ** header) {
+  int ix   = blockIdx.x*blockDim.x + threadIdx.x;
+  int iy   = blockIdx.y*blockDim.y + threadIdx.y;
+  int idx = iy*numCols + ix;
+
+  if(ix < numCols && iy < numRows) {
+    if((ix <= edgeWidth || iy <= edgeWidth) || (ix >= numCols - edgeWidth || iy >= numRows - edgeWidth)) {
+      pixels[idx] = 0;
+    }
+  }
+}
+
+__global__ void dPgmDrawLine(int *pixels, int numRows, int numCols, float slope, float rem, int p1row, int p1col) {
+  int ix   = blockIdx.x*blockDim.x + threadIdx.x;
+  int iy   = blockIdx.y*blockDim.y + threadIdx.y;
+  int idx = iy*numCols + ix;
+
+  // int p2[2] = {iy, ix % numCols};
+  // int p1[2] = {p1row, p1col};
+
+  if(iy == ceil(((float)(ix % numCols) * slope + rem))) {
+    pixels[idx] = 0;
+  }
+  
 }

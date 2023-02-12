@@ -10,4 +10,10 @@
  */
 __host__ __device__ float distance( int p1[], int p2[] );
 
+__device__ float findSlope( int p1[], int p2[]);
+
 __global__ void dPgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius);
+
+__global__ void dPgmDrawLine(int *pixels, int numRows, int numCols, float slope, float rem, int p1row, int p1col);
+
+__global__ void dPgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char ** header);
