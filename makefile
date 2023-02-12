@@ -11,4 +11,4 @@ pgmProcess.o: pgmProcess.cu
 	nvcc -arch=sm_52 -c pgmProcess.cu
 
 clean:
-	rm -r *.o lab1
+	rm -r *.o myPaint
