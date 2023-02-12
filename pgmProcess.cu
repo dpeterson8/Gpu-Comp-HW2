@@ -67,7 +67,12 @@ __global__ void dPgmDrawLine(int *pixels, int numCols, float slope, float rem, i
   int idx = iy*numCols + ix;
 
   int x = (ix % numCols);
-  if(iy == round(((float)x * slope + rem))) {
+  if(slope == INFINITY) {
+    if(x == p1col && minY && iy <= maxY) {
+      pixels[idx] = 0;
+    }
+  } 
+  else if(iy == round(((float)x * slope + rem))) {
     if(x >= minX && x <= maxX && iy >= minY && iy <= maxY) {
       pixels[idx] = 0;
     }
