@@ -11,6 +11,7 @@
 // NOTE: You might have to change the name of this file into pgmUtility.cu if needed.
 
 int * pgmRead( char **header, int *numRows, int *numCols, FILE *in  ) {
+
   int i, j;
 
   for( i = 0; i < rowsInHeader; i++) {
@@ -52,6 +53,12 @@ int pgmDrawEdge( int *pixels, int numRows, int numCols, int edgeWidth, char **he
 }
 
 int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header ) {
+
+  if (header == NULL) {
+    return 0;
+  } else if (pixels == NULL) {
+    return 0;
+  }
     
   dim3 block, grid;
 
@@ -64,24 +71,35 @@ int pgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int cen
   dPgmDrawCircle<<<grid, block>>>(pixels, numRows, numCols, centerCol, centerRow, radius);
   
   return 1;
+
 }
 
 int cpuPgmDrawCircle( int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header ) {
+  
+  if (header == NULL) {
+    return 0;
+  } else if (pixels == NULL) {
+    return 0;
+  }
+  
   int i, j;
 
   for(i = 0; i < numRows; i++) {
     for(j = 0; j < numCols; j++) {
+
       int p1[2] = {i, j};
       int p2[2] = {centerRow, centerCol};
       int dis = hostDistance(p1, p2);
-      if (dis <= radius)
-      {
+
+      if (dis <= radius) {
         pixels[(i * numCols) + j] = 0;
       }
         
     }
   }
+
   return 1;
+
 }
 
 int pgmDrawLine( int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col ) {
@@ -93,12 +111,44 @@ int pgmDrawLine( int *pixels, int numRows, int numCols, char **header, int p1row
   grid.x = ceil( (float)numCols / (float)block.x );
   grid.y = ceil( (float)numRows / (float)block.y );
 
-  float slope = (p2row - p1row)/(p2col - p1col);
+  float slope = ((p2row - p1row)/(p2col - p1col));
   float remainder = p1row - (slope * p1col);
 
-  dPgmDrawLine<<<grid, block>>>(pixels, numRows, numCols, slope, remainder);
+  // if(p1row == (p1col * slope) + remainder) {
+  //   printf("Working");
+  // }
+
+  dPgmDrawLine<<<grid, block>>>(pixels, numRows, numCols, slope, remainder, p1row, p1col);
   
   return 1;
+  
+}
+
+int cpuPgmDrawLine( int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col ) {
+  int i, j;
+
+  float slope, intercept;
+  float p1r, p1c, p2r, p2c;
+  p1r = p1row;
+  p1c = p1col;
+  p2r = p2row;
+  p2c = p2col;
+  
+  slope = ((p2r-p1r)/(p2c-p1c));
+  intercept = p2r - (slope * p2c);
+
+  for(i = 0; i < numRows; i++) {
+    for(j = 0; j < numCols; j++) {
+
+      if (i == ceil(((float)j * slope) + intercept)) {
+        pixels[(i * numCols) + j] = 0;
+      }
+
+    }
+  }
+
+  return 1;
+
 }
 
 

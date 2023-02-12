@@ -24,7 +24,7 @@ __device__ float distance( int p1[], int p2[] )
 
 }
 
-__device__ float slope( int p1[], int p2[]) {
+__device__ float findSlope( int p1[], int p2[]) {
   float x1 = p1[1];
   float x2 = p2[1];
   float y1 = p1[0];
@@ -61,24 +61,21 @@ __global__ void dPgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidt
   }
 }
 
-__global__ void dPgmDrawLine(int *pixels, int numRows, int numCols, float slope, float rem) {
+__global__ void dPgmDrawLine(int *pixels, int numRows, int numCols, float slope, float rem, int p1row, int p1col) {
   int ix   = blockIdx.x*blockDim.x + threadIdx.x;
   int iy   = blockIdx.y*blockDim.y + threadIdx.y;
   int idx = iy*numCols + ix;
 
-  // int p1[2] = {iy, ix % numCols};
-  // int newP1[2] = {p1row, p1col};
-  // int p2[2] = {p2row, p2col};
-  // float slope1 = slope(p1, p2);
-  // float remainder = (p1row - (p1col * slope1));
-  // float final = (slope1*p1[0] - remainder);
+  int p2[2] = {iy, ix % numCols};
+  int p1[2] = {p1row, p1col};
 
-  // float slope2 = slope(newP1, p2);
-
-//  slope1 == slope2
-  if(iy == (ix*slope) + rem) {
+  float nSlope = findSlope(p2, p1);
+  //float slope2 = slope(newP1, p2);
+   //slope1 == slope2
+  //iy == ceil(((ix % numCols)*slope) + rem) || iy == floor(((ix % numCols)*slope) + rem)
+  if(iy == ((ix % numCols) * slope + rem)) {
     //if(ix > p1row && iy > p1col && ix < p2row && iy < p2col) {
       pixels[idx] = 0;
-   // }
+    //}
   }
 }
