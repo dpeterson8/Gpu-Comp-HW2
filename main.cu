@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   int num_bytes;
   char * drawType;
   double now, then;
-  double scost;
+  double scost, pcost;
 
   if (argv[1] != NULL) {
     drawType = argv[1];
@@ -56,23 +56,14 @@ int main(int argc, char *argv[]) {
     num_bytes = numCols * numRows * sizeof(int);
 
     // run cpPgmDrawCircle which will draw the circle using only cpu
-    then = currentTime();
-    cpuPgmDrawCircle(hPixels, numRows, numCols, circleCenterRow, circleCenterCol, circleRadius, header);
-    now = currentTime();
-    scost = now - then;
-    printf("Drawing the circle using cpu took: %lf\n", scost);
+    // cpuPgmDrawCircle(hPixels, numRows, numCols, circleCenterRow, circleCenterCol, circleRadius, header);
 
     // calls to draw circle using 
-    then = currentTime();
     cudaMalloc((void **) &dPixels, num_bytes);
     cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
     pgmDrawCircle(dPixels, numRows, numCols, circleCenterCol, circleCenterRow, circleRadius, header);
-    cudaDeviceSynchronize();
     cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
     cudaFree(dPixels);
-    now = currentTime();
-    scost = now - then;
-    printf("Allocating memory and drawing the circle using gpu took: %lf\n", scost);
 
     int ret = pgmWrite((const char **) header, hPixels, numRows, numCols, outFile);
     for(i = 0; i < rowsInHeader; i++) {
@@ -100,22 +91,11 @@ int main(int argc, char *argv[]) {
     hPixels = pgmRead(header, &numRows, &numCols, inFile);
     num_bytes = numCols * numRows * sizeof(int);
 
-    then = currentTime();
-
-    now = currentTime();
-    scost = now - then;
-    printf("Drawing the edge using cpu took: %lf\n", scost);
-
-    then = currentTime();
     cudaMalloc((void **) &dPixels, num_bytes);
     cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
     pgmDrawEdge(dPixels, numRows, numCols, edgeWidth, header);
-    cudaDeviceSynchronize();
     cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
     cudaFree(dPixels);
-    now = currentTime();
-    scost = now - then;
-    printf("Allocating memory and drawing the edge using gpu took: %lf\n", scost);
 
     int ret = pgmWrite((const char **) header, hPixels, numRows, numCols, outFile);
     for(i = 0; i < rowsInHeader; i++) {
@@ -126,6 +106,11 @@ int main(int argc, char *argv[]) {
 
   } 
   else if(drawType[1] == 'l') {
+
+    if(argc != 8) {
+      displayError();
+      exit(0);
+    }
 
     p1row = atoi(argv[2]);
     p1col = atoi(argv[3]);
@@ -144,7 +129,6 @@ int main(int argc, char *argv[]) {
     cudaMalloc((void **) &dPixels, num_bytes);
     cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
     pgmDrawLine(dPixels, numRows, numCols, header, p1row, p1col, p2row, p2col);
-    cudaDeviceSynchronize();
     cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
     cudaFree(dPixels);
 

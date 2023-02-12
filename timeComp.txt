@@ -1,0 +1,44 @@
+    Time with memory Allocating included: 
+
+./myPaint -c 470 355 100 ./balloons.ascii.pgm test.pgm -
+
+Drawing the circle using cpu took: 0.003943
+Allocating memory and drawing the circle using gpu took: 0.358144
+Time diffrence from cpu and gpu: 0.354201
+
+./myPaint -e 50 ./balloons.ascii.pgm test.pgm -
+
+Drawing the edge using cpu took: 0.326754
+Allocating memory and drawing the edge using gpu took: 0.200890
+Time diffrence from cpu and gpu: 0.125864
+
+./myPaint -l 479 5 0 639 ./balloons.ascii.pgm test.pgm -
+
+Drawing the line using cpu took: 0.002635
+Allocating memory and drawing the line using cpu took: 0.386424
+Time diffrence from cpu and gpu: 0.383789
+
+
+
+
+    Time with with no memory Allocating counted:
+
+./myPaint -c 470 355 100 ./balloons.ascii.pgm test.pgm -
+
+Drawing the circle using cpu took: 0.003974
+Allocating memory and drawing the edge using gpu took: 0.000025
+Time diffrence from cpu and gpu: 0.003949
+
+./myPaint -e 50 ./balloons.ascii.pgm test.pgm -
+
+Drawing the edge using cpu took: 0.366720
+Allocating memory and drawing the edge using gpu took: 0.000010
+Time diffrence from cpu and gpu: 0.366710
+
+./myPaint -l 479 5 0 639 ./balloons.ascii.pgm test.pgm -
+
+Drawing the line using cpu took: 0.002663
+Allocating memory and drawing the line using cpu took: 0.000019
+Time diffrence from cpu and gpu: 0.002644
+
+

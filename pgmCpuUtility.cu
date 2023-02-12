@@ -41,9 +41,9 @@ int cpuPgmDrawEdge( int *pixels, int numRows, int numCols, int edgeWidth, char *
   for(i = 0; i < numRows; i++) {
     for(j = 0; j < numCols; j++) {
       if(j < numCols && i < numRows) {
-        if((j <= edgeWidth || i <= edgeWidth) || (j >= numCols - edgeWidth || i >= numRows - edgeWidth)) {
-          pixels[(i * numCols) + j] = 0;
-        }
+          if((j <= edgeWidth || i <= edgeWidth) || (j >= numCols - edgeWidth || i >= numRows - edgeWidth)) {
+            pixels[(i * numCols) + j] = 0;
+          }
       }
     }
   }
