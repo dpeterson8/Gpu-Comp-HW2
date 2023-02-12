@@ -114,12 +114,12 @@ int main(int argc, char *argv[]) {
     hPixels = pgmRead(header, &numRows, &numCols, inFile);
     num_bytes = numCols * numRows * sizeof(int);
 
-    //cudaMalloc((void **) &dPixels, num_bytes);
-    //cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
-    cpuPgmDrawLine(hPixels, numRows, numCols, header, p1row, p1col, p2row, p2col);
-    //cudaDeviceSynchronize();
-    //cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
-    //cudaFree(dPixels);
+    cudaMalloc((void **) &dPixels, num_bytes);
+    cudaMemcpy( dPixels, hPixels, num_bytes, cudaMemcpyHostToDevice );
+    pgmDrawLine(dPixels, numRows, numCols, header, p1row, p1col, p2row, p2col);
+    cudaDeviceSynchronize();
+    cudaMemcpy( hPixels, dPixels, num_bytes, cudaMemcpyDeviceToHost );
+    cudaFree(dPixels);
 
     int ret = pgmWrite((const char **) header, hPixels, numRows, numCols, outFile);
     for(i = 0; i < rowsInHeader; i++) {

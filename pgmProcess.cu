@@ -66,16 +66,11 @@ __global__ void dPgmDrawLine(int *pixels, int numRows, int numCols, float slope,
   int iy   = blockIdx.y*blockDim.y + threadIdx.y;
   int idx = iy*numCols + ix;
 
-  int p2[2] = {iy, ix % numCols};
-  int p1[2] = {p1row, p1col};
+  // int p2[2] = {iy, ix % numCols};
+  // int p1[2] = {p1row, p1col};
 
-  float nSlope = findSlope(p2, p1);
-  //float slope2 = slope(newP1, p2);
-   //slope1 == slope2
-  //iy == ceil(((ix % numCols)*slope) + rem) || iy == floor(((ix % numCols)*slope) + rem)
-  if(iy == ((ix % numCols) * slope + rem)) {
-    //if(ix > p1row && iy > p1col && ix < p2row && iy < p2col) {
-      pixels[idx] = 0;
-    //}
+  if(iy == ceil(((float)(ix % numCols) * slope + rem))) {
+    pixels[idx] = 0;
   }
+  
 }

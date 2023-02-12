@@ -108,11 +108,18 @@ int pgmDrawLine( int *pixels, int numRows, int numCols, char **header, int p1row
   block.x = 32;
   block.y = 32;
 
+  float p1r, p1c, p2r, p2c;
+
+  p1r = p1row;
+  p1c = p1col;
+  p2r = p2row;
+  p2c = p2col;
+
   grid.x = ceil( (float)numCols / (float)block.x );
   grid.y = ceil( (float)numRows / (float)block.y );
 
-  float slope = ((p2row - p1row)/(p2col - p1col));
-  float remainder = p1row - (slope * p1col);
+  float slope = ((p2r - p1r)/(p2c - p1c));
+  float remainder = p1r - (slope * p1c);
 
   // if(p1row == (p1col * slope) + remainder) {
   //   printf("Working");
