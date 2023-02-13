@@ -23,7 +23,10 @@ int main(int argc, char *argv[]) {
 
   if (argv[1] != NULL) {
     drawType = argv[1];
-  } else { displayError(); }
+  } else {
+    displayError();
+    exit(1);
+  }
 
   int i;
   for(i = 0; i < rowsInHeader; i ++) {
@@ -33,18 +36,23 @@ int main(int argc, char *argv[]) {
   if(drawType[1] == 'c') {
     if(argc != 7) {
       displayError();
+      exit(1);
     } 
       
     // get circle col, row, and radius from argv
     circleCenterRow = atoi(argv[2]);
     circleCenterCol = atoi(argv[3]);
     circleRadius = atoi(argv[4]);
-
     
     strcpy(originalFileName, argv[5]);
     strcpy(newFileName, argv[6]);
 
-    inFile = fopen(originalFileName, "r");
+    if(fopen(originalFileName, "r") != NULL) {
+      inFile = fopen(originalFileName, "r");
+    } else {
+      displayError();
+      exit(1);
+    }
     outFile = fopen(newFileName, "w"); 
 
     if(inFile == NULL) {
@@ -53,6 +61,7 @@ int main(int argc, char *argv[]) {
 
     // read file and get the header, number of rows, and number of columns in pgm file
     hPixels = pgmRead(header, &numRows, &numCols, inFile);
+    fclose(inFile);
     num_bytes = numCols * numRows * sizeof(int);
 
     // run cpPgmDrawCircle which will draw the circle using only cpu
@@ -66,6 +75,7 @@ int main(int argc, char *argv[]) {
     cudaFree(dPixels);
 
     int ret = pgmWrite((const char **) header, hPixels, numRows, numCols, outFile);
+    fclose(outFile);
     for(i = 0; i < rowsInHeader; i++) {
         free(header[i]);
     }
@@ -78,17 +88,24 @@ int main(int argc, char *argv[]) {
 
     if(argc != 5) {
       displayError();
-      exit(0);
+      exit(1);
     }
 
     int edgeWidth = atoi(argv[2]);
     strcpy(originalFileName, argv[3]);
     strcpy(newFileName, argv[4]);
 
-    inFile = fopen(originalFileName, "r");
-    outFile = fopen(newFileName, "w"); 
-    cpuPgmDrawEdge(hPixels, numRows, numCols, edgeWidth, header);
+    if(fopen(originalFileName, "r") != NULL) {
+      inFile = fopen(originalFileName, "r");
+    } else {
+      displayError();
+      exit(1);
+    }
+
+    outFile = fopen(newFileName, "w");
+
     hPixels = pgmRead(header, &numRows, &numCols, inFile);
+    fclose(inFile);
     num_bytes = numCols * numRows * sizeof(int);
 
     cudaMalloc((void **) &dPixels, num_bytes);
@@ -98,6 +115,7 @@ int main(int argc, char *argv[]) {
     cudaFree(dPixels);
 
     int ret = pgmWrite((const char **) header, hPixels, numRows, numCols, outFile);
+    fclose(outFile);
     for(i = 0; i < rowsInHeader; i++) {
         free(header[i]);
     }
@@ -120,10 +138,16 @@ int main(int argc, char *argv[]) {
     strcpy(originalFileName, argv[6]);
     strcpy(newFileName, argv[7]);
 
-    inFile = fopen(originalFileName, "r");
+    if(fopen(originalFileName, "r") != NULL) {
+      inFile = fopen(originalFileName, "r");
+    } else {
+      displayError();
+      exit(1);
+    }
     outFile = fopen(newFileName, "w"); 
 
     hPixels = pgmRead(header, &numRows, &numCols, inFile);
+    fclose(inFile);
     num_bytes = numCols * numRows * sizeof(int);
 
     cudaMalloc((void **) &dPixels, num_bytes);
@@ -133,13 +157,17 @@ int main(int argc, char *argv[]) {
     cudaFree(dPixels);
 
     int ret = pgmWrite((const char **) header, hPixels, numRows, numCols, outFile);
+    fclose(outFile);
     for(i = 0; i < rowsInHeader; i++) {
         free(header[i]);
     }
     free(header);
     free(hPixels);
 
-  } else { displayError(); }
+  } else { 
+    displayError();
+    exit(1);
+  }
 
   return 0;
 }
